@@ -4,7 +4,7 @@
 function fetch_word()
 {
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.open("POST", "http://127.0.0.1:8080"); // false for synchronous request
+    xmlHttp.open("POST", "http://127.0.0.1:8080"); 
     xmlHttp.send();
     console.log(xmlHttp.responseText);
   
