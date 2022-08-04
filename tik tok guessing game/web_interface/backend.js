@@ -16,7 +16,7 @@ let i = 0;
 
 fetch_word();
 
-console.log("Sleep done!")
+console.log("done!")
 
    
   
