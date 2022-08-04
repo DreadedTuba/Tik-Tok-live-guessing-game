@@ -1,12 +1,13 @@
 
-import random
+import random, json
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from httpcore import ConnectError
 from random_words import RandomWords
 # https://isaackogan.github.io/TikTokLive/
 from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import CommentEvent, GiftEvent, ShareEvent, FollowEvent, ViewerCountUpdateEvent
-
+from sqlalchemy import true
+import signal
 # use txttovoice library and make the comments to voice
 
 def randomize_words(): # function gets a random word and tells the code needed info
@@ -66,7 +67,7 @@ def randomize_words(): # function gets a random word and tells the code needed i
         question_mark_num = 6
         is_hard_word = "True"  
  
- 
+
  
     rand_char_num = random.randint(0, len_of_word)
 
@@ -75,26 +76,30 @@ def randomize_words(): # function gets a random word and tells the code needed i
         pos = random.randint(0, len(word)-1)
         question_word = word.replace(word[pos], "?", 3)
 
-    return {"unsensored_word": str_rand_word, "hidden_word": question_word, "length_of_word": len_of_word}
-
+    
+    response = {"unsensored_word": str_rand_word, "hidden_word": question_word, "length_of_word": len_of_word}
+    return json.dumps(response)
     
 def scrape_tt_info():
     
     client: TikTokLiveClient = TikTokLiveClient(unique_id="@dev_kuro")
     
-
+    
     @client.on("comment")
     async def on_comment(event: CommentEvent):
         user_name = event.user.nickname
         comment_sent = event.comment
-        return {"username_list": user_name, "comment_list": comment_sent}
+        json_comment_info = {"username_list": user_name, "comment_list": comment_sent}
+        return json.dumps(json_comment_info)
+        
         
     @client.on("gift")
     async def on_gift(event: GiftEvent):
         user_name = event.user.nickname
         gift_given = event.gift
-        return {"username": user_name, "gift_sent": gift_given}
-
+        json_gift_info = {"username": user_name, "gift_sent": gift_given}
+        return json.dumps(json_gift_info)
+        
     client.add_listener("comment", on_comment)
     client.add_listener("gift", on_gift)
     client.run()
@@ -107,25 +112,28 @@ class Server_necs(BaseHTTPRequestHandler):
     def _set_headers(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
 
 
     def do_GET(self): # getting the usernames
         self.send_response(200)
         self.send_header("Content-type", "text/html")
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
-        #ret_info = scrape_tt_info()
-        #message = str(ret_info)
-        self.wfile.write(bytes("this is a valid request though the usernmames module is down :(", "utf8"))
+        ret_info = scrape_tt_info()
+        message = str(ret_info)
+        self.wfile.write(bytes(message, "utf8"))
   
     
     def do_POST(self): # gettnig the word
         self.send_response(200)
         self.send_header('Content-type','text/html')
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
-
         array_of_info = randomize_words()   
         message = str(array_of_info)
+
         self.wfile.write(bytes(message, "utf8"))
 
 
@@ -140,3 +148,4 @@ def run(server_class=HTTPServer, handler_class=Server_necs, addr="localhost", po
 if __name__ == "__main__":
     run(addr="127.0.0.1", port=8080)
     
+
