@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<!-- 
+    1. set up user reconition to show when a user gets it right
+
+    2. set up a way to show what comments are sent
+
+    3. use len() in php to set up html 
+
+ -->
+
+ <script>
+
+const fetch_word = async () => { // Big shoutout to Shades#8110! he helped with almost all the javascript
+    const word = await fetch('http://localhost:8080', { method: 'POST' }).then(res => res.json())
+    console.log(word)
+    let div = document.getElementById('info')
+    div.innerText = word.hidden_word
+    div.style.fontSize = '50px'
+    div.style.color = 'lightblue'
+    div.style.fontFamily = "monospace"
+    div.style.textDecoration.underline = "true"
+    
+
+}
+
+const fetch_users = async () => { // Big shoutout to Shades#8110! he helped with almost all the javascript
+    const users_info = await fetch('http://localhost:8080', { method: 'GET' }).then(res => res.json())
+    console.log(users_info)
+    let div = document.getElementById('info')
+    div.innerText = users_info.username_list
+    div.style.fontSize = '50px'
+    div.style.color = 'lightblue'
+    div.style.fontFamily = "monospace"
+    div.style.textDecoration.underline = "true"
+}
+
+const sleep = (ms) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms)
+    })
+}
+
+async function run() {
+    console.log('run')
+    let x = true
+    while (x) { 
+        await fetch_word()
+        await sleep(3000)  
+        console.log("Fetched word!");
+        await fetch_users()
+    }
+}
+run();
+// function test() {
+//     // Select the node that will be observed for mutations
+//     var targetNode = document.querySelector('.webcast-chatroom-messages-list.is-not-lock');
+//     var cursedSelector = '.webcast-chatroom-message-item.webcast-chatroom__chat-message.webcast-chatroom__room .webcast-chatroom__profile_wrapper .nickname';
+//     // Options for the observer (which mutations to observe)
+//     var config = { attributes: true, childList: true, subtree: true };
+//     var lastMessage = '';
+//     var messageNodeExtractor = function(domNode){
+//         var result = domNode.querySelector(cursedSelector);
+//         if(result){
+//             result = result.innerText;
+//         }
+//         return result; 
+//     }
+//     var emptyMessageFilter = function(message){
+//         return message;
+//     }
+//     // Callback function to execute when mutations are observed
+//     var callback = function(mutationsList, observer) {
+//         // Use traditional 'for loops' for IE 11
+//         for(var mutation of mutationsList) {
+//             if (mutation.type === 'childList') {
+//                 var addedNodes = [ ...mutation.addedNodes];
+//                 var messages = addedNodes.map(messageNodeExtractor);
+//                 var filteredMessages = messages.filter(emptyMessageFilter);
+//                 if(filteredMessages.length){
+//                 console.log('Hijacked Username', filteredMessages);  
+//                 }
+//             }
+//             else if (mutation.type === 'attributes') {
+//                 console.log('The ' + mutation.attributeName + ' attribute was modified.');
+//             }
+//         }
+//     };
+//     // Create an observer instance linked to the callback function
+//     var observer = new MutationObserver(callback);
+//     // Start observing the target node for configured mutations
+//     observer.observe(targetNode, config);
+//     // Later, you can stop observing
+//     // observer.disconnect();
+// }
+// test();
+</script>
+
+
+<style>
+    .title{
+        color: forestgreen;
+        font-family: monospace;
+        font-size: 50px;
+
+    }
+
+    .base_div{
+        margin-top: 30px;
+        background-color: rgb(34, 34, 34);
+        border-radius: 15px;
+        width: 900px;
+        height: 850px;
+
+    }
+
+    .php_test{
+        font-size: 40px;
+    }
+
+</style>
+
+<html>
+<body>
+<center>
+    <div class="base_div">
+        <h1 class="title">Welcome to Kuros tik tok guessing game!</h1>
+        <div id="info">
+        
+        </div>
+    </div>
+</center>
+
+
+<h1 style="margin-top: -700px; margin-left: 900px;"></h1>
+</body>
+</html>
