@@ -20,8 +20,6 @@ const fetch_word = async () => { // Big shoutout to Shades#8110! he helped with 
     div.style.color = 'lightblue'
     div.style.fontFamily = "monospace"
     div.style.textDecoration.underline = "true"
-    
-
 }
 
 const fetch_users = async () => { // Big shoutout to Shades#8110! he helped with almost all the javascript
@@ -46,7 +44,7 @@ async function run() {
     let x = true
     while (x) { 
         await fetch_word()
-        await sleep(3000)  
+        await sleep(3000)
         console.log("Fetched word!");
         await fetch_users()
     }
