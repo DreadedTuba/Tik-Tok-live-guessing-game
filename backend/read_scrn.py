@@ -82,18 +82,16 @@ def randomize_words(): # function gets a random word and tells the code needed i
     
 def scrape_tt_info():
     
-    client: TikTokLiveClient = TikTokLiveClient(unique_id="@dev_kuro")
+    client: TikTokLiveClient = TikTokLiveClient(unique_id="@dev_kuro") # a live user
     
-    def clean_info(comment_sent, user_name):
-        on_comment()
-        json_comment_info = {"username_list": user_name, "comment_list": comment_sent}
-        return json_comment_info
+
     
     @client.on("comment")
     async def on_comment(event: CommentEvent):
+        
         user_name = event.user.nickname
         comment_sent = event.comment
-        clean_info(comment_sent, user_name)
+        
         
         
        
